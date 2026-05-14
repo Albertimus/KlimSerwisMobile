@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2V0dQSUep8E=",
+  "dgSpecHash": "H4TrFFTeqHw=",
   "success": true,
-  "projectFilePath": "C:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\KlimSerwisAPI.csproj",
+  "projectFilePath": "E:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\KlimSerwisAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Acer\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Acer\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

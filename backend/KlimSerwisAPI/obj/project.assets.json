@@ -4441,11 +4441,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\KlimSerwisAPI.csproj",
+      "projectUniqueName": "E:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\KlimSerwisAPI.csproj",
       "projectName": "KlimSerwisAPI",
-      "projectPath": "C:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\KlimSerwisAPI.csproj",
+      "projectPath": "E:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\KlimSerwisAPI.csproj",
       "packagesPath": "C:\\Users\\Acer\\.nuget\\packages\\",
-      "outputPath": "C:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\obj\\",
+      "outputPath": "E:\\RN\\KlimSerwisMobile\\backend\\KlimSerwisAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

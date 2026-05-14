@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KlimSerwisAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c185dd4aea57dad73240e91f5799bb1349b80aa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c40021403b08369bc6ec058e830d1f2495a7ff4")]
 [assembly: System.Reflection.AssemblyProductAttribute("KlimSerwisAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KlimSerwisAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
