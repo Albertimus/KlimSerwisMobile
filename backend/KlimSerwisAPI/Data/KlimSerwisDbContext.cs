@@ -1,0 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using KlimSerwisAPI.Models;
+
+namespace KlimSerwisAPI.Data;
+
+public class KlimSerwisDbContext : DbContext
+{
+    public KlimSerwisDbContext(DbContextOptions<KlimSerwisDbContext> options)
+        : base(options)
+        {}
+
+    public DbSet<ServiceRequest> ServiceRequests => Set<ServiceRequest>();
+}
