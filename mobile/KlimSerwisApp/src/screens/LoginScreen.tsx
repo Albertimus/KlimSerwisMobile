@@ -22,7 +22,7 @@ function LoginScreen({ navigation }: Props): React.JSX.Element {
   const [password, setPassword] = useState('');
 
   const handleSignIn = () => {
-    navigation.navigate('Home');
+    navigation.navigate('Main');
   };
 
   return (
