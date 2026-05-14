@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { House, ClipboardList, Users, User, } from 'lucide-react-native';
 
 import HomeScreen from '../screens/HomeScreen';
 import RequestsScreen from '../screens/RequestScreen';
@@ -16,10 +17,25 @@ export type MainTabParamList = {
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+function renderTabIcon(routeName: keyof MainTabParamList, color: string, size: number) {
+  switch (routeName) {
+    case 'Home':
+      return <House color={color} size={size} />;
+    case 'Requests':
+      return <ClipboardList color={color} size={size} />;
+    case 'Customers':
+      return <Users color={color} size={size} />;
+    case 'Profile':
+      return <User color={color} size={size} />;
+    default:
+      return null;
+  }
+}
+
 function MainTabNavigator(): React.JSX.Element {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.textSecondary,
@@ -34,7 +50,9 @@ function MainTabNavigator(): React.JSX.Element {
           fontSize: 12,
           fontWeight: '600',
         },
-      }}>
+        tabBarIcon: ({ color, size }) => renderTabIcon(route.name, color, size),
+      })}
+    >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Requests" component={RequestsScreen} />
       <Tab.Screen name="Customers" component={CustomersScreen} />
@@ -42,5 +60,4 @@ function MainTabNavigator(): React.JSX.Element {
     </Tab.Navigator>
   );
 }
-
 export default MainTabNavigator;
