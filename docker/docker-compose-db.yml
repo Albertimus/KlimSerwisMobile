@@ -1,0 +1,14 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: klimserwis-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "KlimSerwis123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - klimserwis_sql_data:/var/opt/mssql
+
+volumes:
+  klimserwis_sql_data:

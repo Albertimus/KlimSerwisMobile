@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Pressable, } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
