@@ -11,5 +11,5 @@ public class RequestStatus
     [Display(Name = "Status name")]
     public string Name { get; set; } = string.Empty;
 
-    public ICollection<ServiceRequest>? ServiceRequests { get; set; }
+    public ICollection<ServiceRequest> ServiceRequests { get; set; } = [];
 }

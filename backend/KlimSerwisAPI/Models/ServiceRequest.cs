@@ -22,5 +22,6 @@ public class ServiceRequest
     public RequestStatus? RequestStatus { get; set; }
 
     [DataType(DataType.DateTime)]
+    [Display(Name = "Created at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

@@ -1,7 +1,11 @@
 using KlimSerwisAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using KlimSerwisAPI.Data.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<KlimSerwisDbContext>(options =>
     options.UseSqlServer(
@@ -9,8 +13,15 @@ builder.Services.AddDbContext<KlimSerwisDbContext>(options =>
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds(type => type.FullName);
+});
 
 var app = builder.Build();
 
@@ -42,6 +53,16 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<KlimSerwisDbContext>();
+    await DbSeeder.SeedAsync(dbContext);
+}
 
 app.Run();
 
