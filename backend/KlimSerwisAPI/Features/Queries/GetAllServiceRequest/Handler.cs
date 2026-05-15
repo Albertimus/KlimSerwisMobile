@@ -23,6 +23,7 @@ public class Handler : IRequestHandler<Query, List<Response>>
         {
             Id = x.Id,
             Title = x.Title,
+            Description = x.Description,
             Status = x.RequestStatus!.Name,
             CreatedAt = x.CreatedAt,
         }).ToListAsync(cancellationToken);
