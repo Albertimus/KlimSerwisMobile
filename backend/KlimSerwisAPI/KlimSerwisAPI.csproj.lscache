@@ -59,6 +59,7 @@ Data/
 Features/Controllers/
  CustomersController.cs
  ServiceRequestController.cs
+ ServiceVisitsController.cs
  TechnicansController.cs
 Features/Customers/Commands/CreateCustomer/
  Command.cs
@@ -94,6 +95,21 @@ Features/ServiceRequests/Queries/GetServiceRequestById/
  Handler.cs
  Query.cs
  Response.cs
+Features/ServiceVisits/Commands/CreateServiceVisit/
+ Command.cs
+ Handler.cs
+ Response.cs
+Features/ServiceVisits/Commands/DeleteServiceVisit/
+ Command.cs
+ Handler.cs
+Features/ServiceVisits/Commands/UpdateServiceVisit/
+ Command.cs
+ Handler.cs
+ Response.cs
+Features/ServiceVisits/Queries/GetAllServiceVisits/
+ Handler.cs
+ Query.cs
+ Response.cs
 Features/Technicans/Commands/CreateTechnican/
  Command.cs
  Handler.cs
@@ -115,11 +131,14 @@ Migrations/
  20260516090126_AddCustomer.Designer.cs
  20260516093341_AddTechnicians.cs
  20260516093341_AddTechnicians.Designer.cs
+ 20260516095448_AddServiceVisits.cs
+ 20260516095448_AddServiceVisits.Designer.cs
  KlimSerwisDbContextModelSnapshot.cs
 Models/
  Customer.cs
  RequestStatus.cs
  ServiceRequest.cs
+ ServiceVisit.cs
  Technican.cs
 obj/Debug/net8.0/
  .NETCoreApp,Version=v8.0.AssemblyAttributes.cs

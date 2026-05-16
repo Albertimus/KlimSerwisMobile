@@ -78,5 +78,46 @@ public static class DbSeeder
 
             await dbContext.SaveChangesAsync();
         }
+
+        var customers = await dbContext.Customers.ToListAsync();
+        var technicians = await dbContext.Technicians.ToListAsync();
+        var serviceRequests = await dbContext.ServiceRequests.ToListAsync();
+        if (!await dbContext.ServiceVisits.AnyAsync()
+            && customers.Count >= 3
+            && technicians.Count >= 3
+            && serviceRequests.Count >= 3)
+        {
+            dbContext.ServiceVisits.AddRange(
+                new ServiceVisit
+                {
+                    CustomerId = customers[0].Id,
+                    TechnicianId = technicians[0].Id,
+                    ServiceRequestId = serviceRequests[0].Id,
+                    VisitDate = DateTime.UtcNow.AddDays(1),
+                    Status = "Scheduled",
+                    Notes = "Initial diagnostics visit"
+                },
+                new ServiceVisit
+                {
+                    CustomerId = customers[1].Id,
+                    TechnicianId = technicians[1].Id,
+                    ServiceRequestId = serviceRequests[1].Id,
+                    VisitDate = DateTime.UtcNow.AddDays(2),
+                    Status = "Confirmed",
+                    Notes = "Annual maintenance service"
+                },
+                new ServiceVisit
+                {
+                    CustomerId = customers[2].Id,
+                    TechnicianId = technicians[2].Id,
+                    ServiceRequestId = serviceRequests[2].Id,
+                    VisitDate = DateTime.UtcNow.AddDays(3),
+                    Status = "Pending",
+                    Notes = "Leak inspection and repair"
+                }
+            );
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }
