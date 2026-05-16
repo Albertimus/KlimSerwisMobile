@@ -1,9 +1,32 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import Colors from '../constants/colors';
+import { API_URL } from '../services/api';
 
 function HomeScreen(): React.JSX.Element {
+  const [requestsCount, setRequestsCount] = useState(0);
+  const [customersCount, setCustomersCount] = useState(0);
+  const [visitsCount, setVisitsCount] = useState(0);
+  const navigation = useNavigation<any>();
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${API_URL}/ServiceRequests`).then(response => response.json()),
+      fetch(`${API_URL}/Customers`).then(response => response.json()),
+      fetch(`${API_URL}/ServiceVisits`).then(response => response.json()),
+    ])
+      .then(([requests, customers, visits]) => {
+        setRequestsCount(requests.length);
+        setCustomersCount(customers.length);
+        setVisitsCount(visits.length);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -14,39 +37,60 @@ function HomeScreen(): React.JSX.Element {
 
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>12</Text>
-            <Text style={styles.statLabel}>Open requests</Text>
+            <Text style={styles.statValue}>{requestsCount}</Text>
+            <Text style={styles.statLabel}>Service requests</Text>
           </View>
 
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>4</Text>
-            <Text style={styles.statLabel}>Today visits</Text>
+            <Text style={styles.statValue}>{visitsCount}</Text>
+            <Text style={styles.statLabel}>Scheduled visits</Text>
+          </View>
+        </View>
+
+        <View style={styles.statsGrid}>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{customersCount}</Text>
+            <Text style={styles.statLabel}>Customers</Text>
+          </View>
+
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{requestsCount + visitsCount}</Text>
+            <Text style={styles.statLabel}>Active operations</Text>
           </View>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quick actions</Text>
 
-          <View style={styles.actionCard}>
+          <TouchableOpacity
+            style={styles.actionCard}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('CreateRequest')}>
             <Text style={styles.actionTitle}>New service request</Text>
             <Text style={styles.actionText}>
               Create a new HVAC service or installation request.
             </Text>
-          </View>
+          </TouchableOpacity>
 
-          <View style={styles.actionCard}>
+          <TouchableOpacity
+            style={styles.actionCard}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Schedule')}>
             <Text style={styles.actionTitle}>Service schedule</Text>
             <Text style={styles.actionText}>
               Check upcoming technician visits and assigned tasks.
             </Text>
-          </View>
+          </TouchableOpacity>
 
-          <View style={styles.actionCard}>
+          <TouchableOpacity
+            style={styles.actionCard}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Customers')}>
             <Text style={styles.actionTitle}>Customers</Text>
             <Text style={styles.actionText}>
               Manage customers, contact details and service history.
             </Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -60,6 +104,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 24,
+    paddingBottom: 100,
   },
   header: {
     marginBottom: 28,
@@ -77,7 +122,7 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     gap: 14,
-    marginBottom: 30,
+    marginBottom: 14,
   },
   statCard: {
     flex: 1,
@@ -98,6 +143,7 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: 14,
+    marginTop: 16,
   },
   sectionTitle: {
     fontSize: 20,
