@@ -56,27 +56,43 @@ TemporaryDependencyNodeTargetIdentifier=net8.0
 Data/
  KlimSerwisDbContext.cs
  Seeders/DbSeeder.cs
-Features/
- Controllers/ServiceRequestController.cs
- Queries/GetAllServiceRequest/
-  Handler.cs
-  Query.cs
-  Response.cs
- ServiceRequests/Commands/CreateServiceRequest/
-  Command.cs
-  Handler.cs
-  Response.cs
- ServiceRequests/Commands/DeleteServiceRequest/
-  Command.cs
-  Handler.cs
- ServiceRequests/Commands/UpdateServiceRequest/
-  Command.cs
-  Handler.cs
-  Response.cs
- ServiceRequests/Queries/GetServiceRequestById/
-  Handler.cs
-  Query.cs
-  Response.cs
+Features/Controllers/
+ CustomersController.cs
+ ServiceRequestController.cs
+Features/Customers/Commands/CreateCustomer/
+ Command.cs
+ Handler.cs
+ Response.cs
+Features/Customers/Commands/DeleteCustomer/
+ Command.cs
+ Handler.cs
+Features/Customers/Commands/UpdateCustomer/
+ Command.cs
+ Handler.cs
+ Response.cs
+Features/Customers/Queries/GetAllCustomers/
+ Handler.cs
+ Query.cs
+ Response.cs
+Features/Queries/GetAllServiceRequest/
+ Handler.cs
+ Query.cs
+ Response.cs
+Features/ServiceRequests/Commands/CreateServiceRequest/
+ Command.cs
+ Handler.cs
+ Response.cs
+Features/ServiceRequests/Commands/DeleteServiceRequest/
+ Command.cs
+ Handler.cs
+Features/ServiceRequests/Commands/UpdateServiceRequest/
+ Command.cs
+ Handler.cs
+ Response.cs
+Features/ServiceRequests/Queries/GetServiceRequestById/
+ Handler.cs
+ Query.cs
+ Response.cs
 Migrations/
  20260515122542_InitialCreate.cs
  20260515122542_InitialCreate.Designer.cs
