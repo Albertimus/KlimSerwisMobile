@@ -13,6 +13,7 @@ import EditVisitScreen from '../screens/EditVisitScreen';
 import TechniciansScreen from '../screens/TechniciansScreen';
 import CreateTechnicianScreen from '../screens/CreateTechnicianScreen';
 import EditTechnicianScreen from '../screens/EditTechnicianScreen';
+import RequestStatusesScreen from '../screens/RequestStatusesScreen';
 
 
 export type RootStackParamList = {
@@ -60,6 +61,7 @@ export type RootStackParamList = {
       specialization?: string;
     };
   };
+  RequestStatuses: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -92,6 +94,8 @@ function AppNavigator(): React.JSX.Element {
         options={{headerShown: true, title: 'New technician'}}/>
         <Stack.Screen name="EditTechnician" component={EditTechnicianScreen}
         options={{headerShown: true, title: 'Edit technician'}}/>
+        <Stack.Screen name="RequestStatuses" component={RequestStatusesScreen}
+        options={{headerShown: true, title: 'Request statuses'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

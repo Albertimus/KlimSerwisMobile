@@ -1,10 +1,19 @@
 import React, { useCallback, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { 
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
 import { useFocusEffect } from '@react-navigation/native';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 function HomeScreen(): React.JSX.Element {
   const [requestsCount, setRequestsCount] = useState(0);
@@ -64,6 +73,17 @@ useFocusEffect(
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quick actions</Text>
+
+          <TouchableOpacity
+            style={styles.actionCard}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('RequestStatuses')}>
+            <Text style={styles.actionTitle}>Request statuses</Text>
+
+            <Text style={styles.actionText}>
+              Manage request status dictionary used by service requests.
+            </Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.actionCard}
