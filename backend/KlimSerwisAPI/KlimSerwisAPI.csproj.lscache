@@ -80,8 +80,11 @@ Features/
 Migrations/
  20260515122542_InitialCreate.cs
  20260515122542_InitialCreate.Designer.cs
+ 20260516090126_AddCustomer.cs
+ 20260516090126_AddCustomer.Designer.cs
  KlimSerwisDbContextModelSnapshot.cs
 Models/
+ Customer.cs
  RequestStatus.cs
  ServiceRequest.cs
 obj/Debug/net8.0/

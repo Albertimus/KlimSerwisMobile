@@ -6,10 +6,20 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
+
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'RequestDetails'
+>;
 
 type ServiceRequest = {
   id: number;
@@ -22,6 +32,7 @@ type ServiceRequest = {
 function RequestsScreen(): React.JSX.Element {
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
     fetch(`${API_URL}/ServiceRequests`)
@@ -49,27 +60,45 @@ function RequestsScreen(): React.JSX.Element {
         {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
-          <View style={styles.list}>
-            {requests.map(item => (
-              <View key={item.id} style={styles.card}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.cardTitle}>{item.title}</Text>
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>{item.status}</Text>
-                  </View>
-                </View>
+        <View style={styles.list}>
+          {requests.map(item => (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.card}
+              activeOpacity={0.85}
+              onPress={() =>
+                navigation.navigate('RequestDetails', {
+                  requestId: item.id,
+                })
+              }>
 
-                <Text numberOfLines= {2} style={styles.description}>{item.description}</Text>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
 
-                <View style={styles.footer}>
-                  <Text style={styles.footerText}>Request #{item.id}</Text>
-                  <Text style={styles.footerText}>
-                    {new Date(item.createdAt).toLocaleDateString()}
-                  </Text>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{item.status}</Text>
                 </View>
               </View>
-            ))}
-          </View>
+
+              <Text
+                numberOfLines={2}
+                style={styles.description}>
+                {item.description}
+              </Text>
+
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>
+                  Request #{item.id}
+                </Text>
+
+                <Text style={styles.footerText}>
+                  {new Date(item.createdAt).toLocaleDateString()}
+                </Text>
+              </View>
+
+            </TouchableOpacity>
+          ))}
+        </View>
         )}
       </ScrollView>
     </SafeAreaView>

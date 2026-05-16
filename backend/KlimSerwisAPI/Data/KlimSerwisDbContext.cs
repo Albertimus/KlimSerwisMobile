@@ -11,4 +11,5 @@ public class KlimSerwisDbContext : DbContext
 
     public DbSet<ServiceRequest> ServiceRequests => Set<ServiceRequest>();
     public DbSet<RequestStatus> RequestStatuses => Set<RequestStatus>();
+    public DbSet<Customer> Customers => Set<Customer>();
 }
