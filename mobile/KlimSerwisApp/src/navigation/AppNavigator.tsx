@@ -6,12 +6,14 @@ import LoginScreen from '../screens/LoginScreen';
 import MainTabNavigator from './MainTabNavigator';
 import RequestDetailsScreen from '../screens/RequestDetailsScreen';
 import CreateRequestScreen from '../screens/CreateRequestScreen';
+import CreateCustomerScreen from '../screens/CreateCustomerScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Main: undefined;
   RequestDetails: { requestId: number;};
   CreateRequest: undefined;
+  CreateCustomer: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,6 +32,8 @@ function AppNavigator(): React.JSX.Element {
         options={{headerShown: true, title: 'Request details'}}/>
         <Stack.Screen name="CreateRequest" component={CreateRequestScreen}
         options={{headerShown: true, title: 'New request'}}/>
+        <Stack.Screen name="CreateCustomer" component={CreateCustomerScreen}
+        options={{headerShown: true, title: 'New customer'}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
