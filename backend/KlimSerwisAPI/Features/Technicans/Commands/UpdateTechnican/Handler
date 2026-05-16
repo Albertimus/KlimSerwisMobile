@@ -1,0 +1,44 @@
+using KlimSerwisAPI.Data;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+namespace KlimSerwisAPI.Features.Technicians.Commands.UpdateTechnician;
+
+public class Handler : IRequestHandler<Command, Response?>
+{
+    private readonly KlimSerwisDbContext _dbContext;
+
+    public Handler(KlimSerwisDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public async Task<Response?> Handle(
+        Command request,
+        CancellationToken cancellationToken)
+    {
+        var technician = await _dbContext.Technicians
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+
+        if (technician is null)
+        {
+            return null;
+        }
+
+        technician.FullName = request.FullName;
+        technician.Email = request.Email;
+        technician.PhoneNumber = request.PhoneNumber;
+        technician.Specialization = request.Specialization;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return new Response
+        {
+            Id = technician.Id,
+            FullName = technician.FullName,
+            Email = technician.Email,
+            PhoneNumber = technician.PhoneNumber,
+            Specialization = technician.Specialization
+        };
+    }
+}

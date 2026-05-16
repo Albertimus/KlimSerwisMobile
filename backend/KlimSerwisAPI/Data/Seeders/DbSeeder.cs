@@ -22,7 +22,7 @@ public static class DbSeeder
         }
 
         if (!await dbContext.Customers.AnyAsync())
-{
+        {
             dbContext.Customers.AddRange(
                 new Customer
                 {
@@ -44,6 +44,35 @@ public static class DbSeeder
                     Email = "marek.wisniewski@example.com",
                     PhoneNumber = "+48 730 111 222",
                     Address = "ul. Chłodna 5, Warszawa"
+                }
+            );
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        if (!await dbContext.Technicians.AnyAsync())
+        {
+            dbContext.Technicians.AddRange(
+                new Technician
+                {
+                    FullName = "Jakub Nowicki",
+                    Email = "jakub.nowicki@example.com",
+                    PhoneNumber = "+48 501 777 888",
+                    Specialization = "Air conditioning installation"
+                },
+                new Technician
+                {
+                    FullName = "Mateusz Kowalczyk",
+                    Email = "mateusz.kowalczyk@example.com",
+                    PhoneNumber = "+48 602 333 444",
+                    Specialization = "HVAC diagnostics"
+                },
+                new Technician
+                {
+                    FullName = "Damian Wiśniewski",
+                    Email = "damian.wisniewski@example.com",
+                    PhoneNumber = "+48 730 555 666",
+                    Specialization = "Refrigeration systems"
                 }
             );
 
