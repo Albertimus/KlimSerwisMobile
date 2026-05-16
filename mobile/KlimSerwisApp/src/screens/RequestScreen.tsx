@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -7,19 +7,18 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { useFocusEffect } from '@react-navigation/native';
 
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
 
-type NavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'RequestDetails'
->;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 type ServiceRequest = {
   id: number;
@@ -34,7 +33,52 @@ function RequestsScreen(): React.JSX.Element {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<NavigationProp>();
 
-  useEffect(() => {
+async function handleDeleteRequest(id: number) {
+  Alert.alert(
+    'Delete request',
+    'Are you sure you want to delete this request?',
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const response = await fetch(
+              `${API_URL}/ServiceRequests/${id}`,
+              {
+                method: 'DELETE',
+              },
+            );
+
+            if (!response.ok) {
+              throw new Error('Delete failed');
+            }
+
+            setRequests(current =>
+              current.filter(request => request.id !== id),
+            );
+          } catch (error) {
+            console.error(error);
+
+            Alert.alert(
+              'Error',
+              'Unable to delete request.',
+            );
+          }
+        },
+      },
+    ],
+  );
+}
+
+useFocusEffect(
+  useCallback(() => {
+    setLoading(true);
+
     fetch(`${API_URL}/ServiceRequests`)
       .then(response => response.json())
       .then(data => {
@@ -46,7 +90,8 @@ function RequestsScreen(): React.JSX.Element {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, []),
+);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -56,6 +101,15 @@ function RequestsScreen(): React.JSX.Element {
           <Text style={styles.title}>Service requests</Text>
           <Text style={styles.counter}>{requests.length} active requests</Text>
         </View>
+
+        <TouchableOpacity
+          style={styles.addButton}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('CreateRequest')}>
+          <Text style={styles.addButtonText}>
+            + Add request
+          </Text>
+        </TouchableOpacity>
 
         {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} />
@@ -79,12 +133,35 @@ function RequestsScreen(): React.JSX.Element {
                   <Text style={styles.badgeText}>{item.status}</Text>
                 </View>
               </View>
+              
 
               <Text
                 numberOfLines={2}
                 style={styles.description}>
                 {item.description}
               </Text>
+
+              <TouchableOpacity
+                style={styles.editButton}
+                activeOpacity={0.85}
+                onPress={() =>
+                  navigation.navigate('EditRequest', {
+                    request: item,
+                  })
+                }>
+                <Text style={styles.editButtonText}>
+                  Edit
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.deleteButton}
+                activeOpacity={0.85}
+                onPress={() => handleDeleteRequest(item.id)}>
+                <Text style={styles.deleteButtonText}>
+                  Delete
+                </Text>
+              </TouchableOpacity>
 
               <View style={styles.footer}>
                 <Text style={styles.footerText}>
@@ -181,6 +258,48 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontSize: 12,
     fontWeight: '600',
+  },
+
+  deleteButton: {
+    backgroundColor: '#FEE2E2',
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+
+  deleteButtonText: {
+    color: '#DC2626',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+
+  editButton: {
+    backgroundColor: '#DBEAFE',
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  editButtonText: {
+    color: Colors.primary,
+    fontSize: 14,
+    fontWeight: '800',
+  },
+
+  addButton: {
+    backgroundColor: Colors.primary,
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 18,
+  },
+
+  addButtonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
 

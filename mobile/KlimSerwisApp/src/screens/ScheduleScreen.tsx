@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -6,26 +6,78 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
 
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 
 type ServiceVisit = {
   id: number;
+
+  customerId: number;
+  technicianId: number;
+  serviceRequestId: number;
+
   customerName: string;
   technicianName: string;
   requestTitle: string;
+
   visitDate: string;
   status: string;
   notes?: string;
 };
 
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 function ScheduleScreen(): React.JSX.Element {
   const [visits, setVisits] = useState<ServiceVisit[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation<NavigationProp>();
 
-  useEffect(() => {
+async function handleDeleteVisit(id: number) {
+  Alert.alert(
+    'Delete visit',
+    'Are you sure you want to delete this visit?',
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const response = await fetch(`${API_URL}/ServiceVisits/${id}`, {
+              method: 'DELETE',
+            });
+
+            if (!response.ok) {
+              throw new Error('Delete failed');
+            }
+
+            setVisits(current =>
+              current.filter(visit => visit.id !== id),
+            );
+          } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Unable to delete visit.');
+          }
+        },
+      },
+    ],
+  );
+}
+
+useFocusEffect(
+  useCallback(() => {
+    setLoading(true);
+
     fetch(`${API_URL}/ServiceVisits`)
       .then(response => response.json())
       .then(data => {
@@ -37,7 +89,8 @@ function ScheduleScreen(): React.JSX.Element {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, []),
+);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,6 +102,13 @@ function ScheduleScreen(): React.JSX.Element {
             {visits.length} scheduled visits
           </Text>
         </View>
+
+        <TouchableOpacity
+          style={styles.addButton}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('CreateVisit')}>
+          <Text style={styles.addButtonText}>+ Add visit</Text>
+        </TouchableOpacity>
 
         {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} />
@@ -96,6 +156,24 @@ function ScheduleScreen(): React.JSX.Element {
                     </Text>
                   </View>
                 ) : null}
+
+                <TouchableOpacity
+                  style={styles.editButton}
+                  activeOpacity={0.85}
+                  onPress={() =>
+                    navigation.navigate('EditVisit', {
+                      visit,
+                    })
+                  }>
+                  <Text style={styles.editButtonText}>Edit</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  activeOpacity={0.85}
+                  onPress={() => handleDeleteVisit(visit.id)}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
               </View>
             ))}
           </View>
@@ -190,6 +268,48 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
+
+  deleteButton: {
+    backgroundColor: '#FEE2E2',
+    borderRadius: 14,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+
+  deleteButtonText: {
+    color: '#DC2626',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+
+  addButton: {
+  backgroundColor: Colors.primary,
+  borderRadius: 16,
+  paddingVertical: 14,
+  alignItems: 'center',
+  marginTop: 18,
+},
+
+addButtonText: {
+  color: 'white',
+  fontSize: 15,
+  fontWeight: '700',
+},
+
+editButton: {
+  backgroundColor: '#DBEAFE',
+  borderRadius: 14,
+  paddingVertical: 12,
+  alignItems: 'center',
+  marginTop: 12,
+},
+
+editButtonText: {
+  color: Colors.primary,
+  fontSize: 14,
+  fontWeight: '800',
+},
 });
 
 export default ScheduleScreen;

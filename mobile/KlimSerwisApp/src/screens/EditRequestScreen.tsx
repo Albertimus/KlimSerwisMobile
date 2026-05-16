@@ -9,21 +9,27 @@ import {
   View,
 } from 'react-native';
 
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Picker } from '@react-native-picker/picker';
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
-import { Picker } from '@react-native-picker/picker';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 
 type RequestStatus = {
   id: number;
   name: string;
 };
 
-function CreateRequestScreen(): React.JSX.Element {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [requestStatuses, setRequestStatuses] = useState<RequestStatus[]>([]);
-  const [requestStatusId, setRequestStatusId] = useState('1');
-  const [loading, setLoading] = useState(false);
+type Props = NativeStackScreenProps<RootStackParamList, 'EditRequest'>;
+
+function EditRequestScreen({ route, navigation }: Props): React.JSX.Element {
+  const { request } = route.params;
+
+  const [title, setTitle] = useState(request.title);
+  const [description, setDescription] = useState(request.description);
+  const [requestStatusId, setRequestStatusId] = useState(
+    String(request.requestStatusId ?? 1),
+  );
 
   useEffect(() => {
     fetch(`${API_URL}/RequestStatuses`)
@@ -37,21 +43,25 @@ function CreateRequestScreen(): React.JSX.Element {
       });
   }, []);
 
-  async function handleCreateRequest() {
+  const [requestStatuses, setRequestStatuses] = useState<RequestStatus[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  async function handleUpdateRequest() {
     if (!title || !description) {
-      Alert.alert('Validation', 'Please fill all fields.');
+      Alert.alert('Validation', 'Please fill required fields.');
       return;
     }
 
     try {
       setLoading(true);
 
-      const response = await fetch(`${API_URL}/ServiceRequests`, {
-        method: 'POST',
+      const response = await fetch(`${API_URL}/ServiceRequests/${request.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id: request.id,
           title,
           description,
           requestStatusId: Number(requestStatusId),
@@ -59,20 +69,14 @@ function CreateRequestScreen(): React.JSX.Element {
       });
 
       if (!response.ok) {
-        throw new Error('Request failed');
+        throw new Error('Request update failed');
       }
 
-      Alert.alert('Success', 'Service request created.');
-
-      setTitle('');
-      setDescription('');
+      Alert.alert('Success', 'Service request updated.');
+      navigation.goBack();
     } catch (error) {
       console.error(error);
-
-      Alert.alert(
-        'Error',
-        'Unable to create service request.',
-      );
+      Alert.alert('Error', 'Unable to update request.');
     } finally {
       setLoading(false);
     }
@@ -81,7 +85,7 @@ function CreateRequestScreen(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>New service request</Text>
+        <Text style={styles.title}>Edit request</Text>
 
         <TextInput
           placeholder="Request title"
@@ -119,10 +123,10 @@ function CreateRequestScreen(): React.JSX.Element {
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.85}
-          onPress={handleCreateRequest}
+          onPress={handleUpdateRequest}
           disabled={loading}>
           <Text style={styles.buttonText}>
-            {loading ? 'Creating...' : 'Create request'}
+            {loading ? 'Saving...' : 'Save changes'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -173,22 +177,22 @@ const styles = StyleSheet.create({
   },
 
   pickerBox: {
-    backgroundColor: Colors.surface,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
+  backgroundColor: Colors.surface,
+  borderRadius: 18,
+  borderWidth: 1,
+  borderColor: Colors.border,
+  marginBottom: 16,
+  overflow: 'hidden',
+},
 
-  pickerLabel: {
-    color: Colors.textSecondary,
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    paddingHorizontal: 18,
-    paddingTop: 14,
-  },
+pickerLabel: {
+  color: Colors.textSecondary,
+  fontSize: 12,
+  fontWeight: '700',
+  textTransform: 'uppercase',
+  paddingHorizontal: 18,
+  paddingTop: 14,
+},
 });
 
-export default CreateRequestScreen;
+export default EditRequestScreen;

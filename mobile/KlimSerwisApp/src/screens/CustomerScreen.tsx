@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -6,7 +6,13 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
+import { useFocusEffect } from '@react-navigation/native';
 
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
@@ -19,11 +25,52 @@ type Customer = {
   address?: string;
 };
 
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 function CustomersScreen(): React.JSX.Element {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation<NavigationProp>();
+  
+async function handleDeleteCustomer(id: number) {
+  Alert.alert(
+    'Delete customer',
+    'Are you sure you want to delete this customer?',
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const response = await fetch(`${API_URL}/Customers/${id}`, {
+              method: 'DELETE',
+            });
 
-  useEffect(() => {
+            if (!response.ok) {
+              throw new Error('Delete failed');
+            }
+
+            setCustomers(current =>
+              current.filter(customer => customer.id !== id),
+            );
+          } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Unable to delete customer.');
+          }
+        },
+      },
+    ],
+  );
+}
+
+useFocusEffect(
+  useCallback(() => {
+    setLoading(true);
+
     fetch(`${API_URL}/Customers`)
       .then(response => response.json())
       .then(data => {
@@ -35,7 +82,8 @@ function CustomersScreen(): React.JSX.Element {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, []),
+);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,6 +93,14 @@ function CustomersScreen(): React.JSX.Element {
           <Text style={styles.title}>Customers</Text>
           <Text style={styles.counter}>{customers.length} registered customers</Text>
         </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('CreateCustomer')}>
+          <Text style={styles.addButtonText}>
+            + Add customer
+          </Text>
+        </TouchableOpacity>
 
         {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} />
@@ -70,6 +126,24 @@ function CustomersScreen(): React.JSX.Element {
                     <Text style={styles.value}>{customer.address}</Text>
                   </View>
                 ) : null}
+
+                <TouchableOpacity
+                  style={styles.editButton}
+                  activeOpacity={0.85}
+                  onPress={() =>
+                    navigation.navigate('EditCustomer', {
+                      customer,
+                    })
+                  }>
+                  <Text style={styles.editButtonText}>Edit</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  activeOpacity={0.85}
+                  onPress={() => handleDeleteCustomer(customer.id)}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
 
                 <View style={styles.footer}>
                   <Text style={styles.footerText}>Customer #{customer.id}</Text>
@@ -153,6 +227,47 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
+  addButton: {
+    backgroundColor: Colors.primary,
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 18,
+  },
+
+  addButtonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
+  deleteButton: {
+  backgroundColor: '#FEE2E2',
+  borderRadius: 14,
+  paddingVertical: 12,
+  alignItems: 'center',
+  marginTop: 12,
+},
+
+deleteButtonText: {
+  color: '#DC2626',
+  fontSize: 14,
+  fontWeight: '800',
+},
+
+editButton: {
+  backgroundColor: '#DBEAFE',
+  borderRadius: 14,
+  paddingVertical: 12,
+  alignItems: 'center',
+  marginTop: 10,
+},
+
+editButtonText: {
+  color: Colors.primary,
+  fontSize: 14,
+  fontWeight: '800',
+},
 });
 
 export default CustomersScreen;

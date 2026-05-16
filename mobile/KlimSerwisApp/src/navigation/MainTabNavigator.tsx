@@ -1,7 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { House, ClipboardList, Users, User, } from 'lucide-react-native';
-
+import TechniciansScreen from '../screens/TechniciansScreen';
+import { Wrench } from 'lucide-react-native';
 import HomeScreen from '../screens/HomeScreen';
 import RequestsScreen from '../screens/RequestScreen';
 import CustomersScreen from '../screens/CustomerScreen';
@@ -15,6 +16,7 @@ export type MainTabParamList = {
   Requests: undefined;
   Customers: undefined;
   Schedule: undefined;
+  Technicians: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -29,6 +31,8 @@ function renderTabIcon(routeName: keyof MainTabParamList, color: string, size: n
       return <Users color={color} size={size} />;
     case 'Schedule':
       return <ClipboardList color={color} size={size} />;
+    case 'Technicians':
+      return <Wrench color={color} size={size} />;
     default:
       return null;
   }
@@ -59,6 +63,7 @@ function MainTabNavigator(): React.JSX.Element {
       <Tab.Screen name="Requests" component={RequestsScreen} />
       <Tab.Screen name="Customers" component={CustomersScreen} />
       <Tab.Screen name="Schedule" component={ScheduleScreen} />
+      <Tab.Screen name="Technicians" component={TechniciansScreen}/>
     </Tab.Navigator>
   );
 }

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import Colors from '../constants/colors';
 import { API_URL } from '../services/api';
+import { useFocusEffect } from '@react-navigation/native';
 
 function HomeScreen(): React.JSX.Element {
   const [requestsCount, setRequestsCount] = useState(0);
@@ -11,7 +12,8 @@ function HomeScreen(): React.JSX.Element {
   const [visitsCount, setVisitsCount] = useState(0);
   const navigation = useNavigation<any>();
 
-  useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
     Promise.all([
       fetch(`${API_URL}/ServiceRequests`).then(response => response.json()),
       fetch(`${API_URL}/Customers`).then(response => response.json()),
@@ -25,7 +27,8 @@ function HomeScreen(): React.JSX.Element {
       .catch(error => {
         console.error(error);
       });
-  }, []);
+  }, []),
+);
 
   return (
     <SafeAreaView style={styles.container}>
